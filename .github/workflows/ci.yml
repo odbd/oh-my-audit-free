@@ -22,12 +22,16 @@ jobs:
       - run: node -e "JSON.parse(require('fs').readFileSync('/tmp/results.sarif','utf8'))"
 
   secrets:
-    # Dogfood: scan our own repo for committed secrets.
+    # Dogfood: scan our own repo for committed secrets. We run the (free)
+    # gitleaks CLI directly — the gitleaks-action wrapper now requires a paid
+    # GITLEAKS_LICENSE for org repos, which we don't need just to run the tool.
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - uses: gitleaks/gitleaks-action@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Install gitleaks
+        run: |
+          VERSION=8.18.4
+          curl -sSL "https://github.com/gitleaks/gitleaks/releases/download/v${VERSION}/gitleaks_${VERSION}_linux_x64.tar.gz" \
+            | sudo tar -xz -C /usr/local/bin gitleaks
+      - name: Scan working tree for secrets
+        run: gitleaks detect --source . --no-git --no-banner --redact --verbose
