@@ -1,0 +1,36 @@
+name: "oh-my-audit"
+description: "Local security scan (secrets, SAST, vulnerable deps) producing a score and SARIF — nothing leaves the runner."
+branding:
+  icon: "shield"
+  color: "purple"
+inputs:
+  path:
+    description: "Directory to scan"
+    required: false
+    default: "."
+  format:
+    description: "Output format: pretty | json | sarif"
+    required: false
+    default: "sarif"
+  output:
+    description: "Write output to this file (in addition to stdout)"
+    required: false
+    default: ""
+  fail-on:
+    description: "Fail the job if any finding is at or above this severity (critical|high|medium|low). Empty = never fail."
+    required: false
+    default: ""
+runs:
+  using: "docker"
+  image: "Dockerfile"
+  entrypoint: "/bin/sh"
+  args:
+    - "-c"
+    - >-
+      args="scan '${{ inputs.path }}' --format '${{ inputs.format }}'";
+      if [ -n "${{ inputs.fail-on }}" ]; then args="$args --fail-on '${{ inputs.fail-on }}'"; fi;
+      if [ -n "${{ inputs.output }}" ]; then
+        eval node /app/dist/cli.js $args | tee "${{ inputs.output }}";
+      else
+        eval node /app/dist/cli.js $args;
+      fi

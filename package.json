@@ -1,0 +1,56 @@
+{
+  "name": "oh-my-audit",
+  "version": "0.1.0",
+  "description": "Open-source security scan engine + CLI behind ohmyaudit.app — runs gitleaks, semgrep and osv-scanner over a codebase and returns a 0–100 score with actionable, deduplicated findings. Runs locally; no network, no secrets, no telemetry.",
+  "license": "AGPL-3.0-only",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "bin": {
+    "ohmyaudit": "./dist/cli.js",
+    "oh-my-audit": "./dist/cli.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "prepare": "npm run build"
+  },
+  "keywords": [
+    "security",
+    "sast",
+    "secrets",
+    "gitleaks",
+    "semgrep",
+    "osv-scanner",
+    "dependency-scanning",
+    "security-score",
+    "cli",
+    "sarif"
+  ],
+  "devDependencies": {
+    "@types/node": "^20.19.43",
+    "tsup": "^8.0.0",
+    "typescript": "^5.4.0",
+    "vitest": "^2.0.0"
+  },
+  "homepage": "https://ohmyaudit.app",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/odbd/oh-my-audit-free.git"
+  }
+}
